@@ -1,0 +1,61 @@
+CREATE TABLE Department (
+    DepartmentID NUMBER PRIMARY KEY,
+    Name VARCHAR2(100) NOT NULL,
+    Location VARCHAR2(100)
+);
+
+CREATE TABLE Doctor (
+    DoctorID NUMBER PRIMARY KEY,
+    Name VARCHAR2(100) NOT NULL,
+    Specialization VARCHAR2(100),
+    Phone VARCHAR2(20),
+    Email VARCHAR2(100),
+    DepartmentID NUMBER NOT NULL,
+    FOREIGN KEY (DepartmentID) REFERENCES Department(DepartmentID)
+);
+
+CREATE TABLE Patient (
+    PatientID NUMBER PRIMARY KEY,
+    Name VARCHAR2(100) NOT NULL,
+    DateOfBirth DATE,
+    Gender VARCHAR2(20),
+    Phone VARCHAR2(20),
+    Address VARCHAR2(200)
+);
+
+CREATE TABLE Appointment (
+    AppointmentID NUMBER PRIMARY KEY,
+    AppointmentDate DATE,
+    AppointmentTime VARCHAR2(20),
+    Status VARCHAR2(30),
+    Reason VARCHAR2(300),
+    PatientID NUMBER NOT NULL,
+    DoctorID NUMBER NOT NULL,
+    FOREIGN KEY (PatientID) REFERENCES Patient(PatientID),
+    FOREIGN KEY (DoctorID) REFERENCES Doctor(DoctorID)
+);
+
+CREATE TABLE MedicalRecord (
+    RecordID NUMBER PRIMARY KEY,
+    RecordDate DATE,
+    Diagnosis VARCHAR2(300),
+    Notes VARCHAR2(500),
+    TreatmentPlan VARCHAR2(500),
+    PatientID NUMBER NOT NULL,
+    FOREIGN KEY (PatientID) REFERENCES Patient(PatientID)
+);
+
+CREATE TABLE Treatment (
+    TreatmentID NUMBER PRIMARY KEY,
+    Name VARCHAR2(100) NOT NULL,
+    Description VARCHAR2(500),
+    Cost NUMBER(10,2)
+);
+
+CREATE TABLE MedicalRecordTreatment (
+    RecordID NUMBER,
+    TreatmentID NUMBER,
+    PRIMARY KEY (RecordID, TreatmentID),
+    FOREIGN KEY (RecordID) REFERENCES MedicalRecord(RecordID),
+    FOREIGN KEY (TreatmentID) REFERENCES Treatment(TreatmentID)
+);
