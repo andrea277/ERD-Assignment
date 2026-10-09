@@ -1,0 +1,71 @@
+CREATE TABLE RoomType (
+    RoomTypeID NUMBER PRIMARY KEY,
+    Name VARCHAR2(100) NOT NULL,
+    Description VARCHAR2(500),
+    MaxGuests NUMBER,
+    PricePerNight NUMBER(10,2)
+);
+
+CREATE TABLE Room (
+    RoomNumber NUMBER PRIMARY KEY,
+    FloorNumber NUMBER,
+    Status VARCHAR2(30),
+    RoomTypeID NUMBER NOT NULL,
+    FOREIGN KEY (RoomTypeID) REFERENCES RoomType(RoomTypeID)
+);
+
+CREATE TABLE Guest (
+    GuestID NUMBER PRIMARY KEY,
+    Name VARCHAR2(100) NOT NULL,
+    Email VARCHAR2(100),
+    Phone VARCHAR2(20),
+    Nationality VARCHAR2(50),
+    DateOfBirth DATE
+);
+
+CREATE TABLE Reservation (
+    ReservationID NUMBER PRIMARY KEY,
+    BookingDate DATE,
+    CheckInDate DATE,
+    CheckOutDate DATE,
+    NumberOfGuests NUMBER,
+    ReservationStatus VARCHAR2(30),
+    GuestID NUMBER NOT NULL,
+    FOREIGN KEY (GuestID) REFERENCES Guest(GuestID)
+);
+
+CREATE TABLE ReservationRoom (
+    ReservationID NUMBER,
+    RoomNumber NUMBER,
+    AgreedPricePerNight NUMBER(10,2),
+    PRIMARY KEY (ReservationID, RoomNumber),
+    FOREIGN KEY (ReservationID) REFERENCES Reservation(ReservationID),
+    FOREIGN KEY (RoomNumber) REFERENCES Room(RoomNumber)
+);
+
+CREATE TABLE Service (
+    ServiceID NUMBER PRIMARY KEY,
+    Name VARCHAR2(100) NOT NULL,
+    Description VARCHAR2(500),
+    Price NUMBER(10,2)
+);
+
+CREATE TABLE ServiceRequest (
+    ReservationID NUMBER,
+    ServiceID NUMBER,
+    Quantity NUMBER,
+    RequestDateTime TIMESTAMP,
+    PRIMARY KEY (ReservationID, ServiceID, RequestDateTime),
+    FOREIGN KEY (ReservationID) REFERENCES Reservation(ReservationID),
+    FOREIGN KEY (ServiceID) REFERENCES Service(ServiceID)
+);
+
+CREATE TABLE Payment (
+    PaymentID NUMBER PRIMARY KEY,
+    PaymentDate DATE,
+    Amount NUMBER(10,2),
+    PaymentMethod VARCHAR2(50),
+    PaymentStatus VARCHAR2(30),
+    ReservationID NUMBER NOT NULL,
+    FOREIGN KEY (ReservationID) REFERENCES Reservation(ReservationID)
+);
